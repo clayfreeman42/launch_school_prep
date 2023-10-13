@@ -1,0 +1,383 @@
+Access last element of an array:
+arr[arr.length - 1];
+
+Replace element:
+array[1] = 4
+
+Add element:
+array[array.length] = 10
+
+An array defined with const is mutable, but cannot be assigned to a different object
+
+To freeze an array:
+const MyArray = Object.freeze([1, 2, 3])
+
+It's important to realize that Object.freeze only works one level deep in the array.
+Each sub array would also need to be frozen:
+const MyArray = Object.freeze([1, 2, 3, Object.freeze([4, 5, 6])])
+
+Push - mutates
+array.push('a', 'b');
+
+Concats - returns new array
+concats two arrays plus all arguments
+
+> array.concat(42, 'abc')
+= [ 1, 4, 3, 10, 'a', null, 'xyz', 42, 'abc' ]
+
+> array
+= [ 1, 4, 3, 10, 'a', null, 'xyz' ]
+
+let newArr = oldArr(otherOldArr, 'new_argument');
+
+
+Pop
+array.pop(); => returns last element and removes it
+
+Splice
+let array = [1, 4, 3, 10, "a", null];
+
+> array.splice(3, 2)
+[ 10, 'a' ]
+
+> array
+= [ 1, 4, 3, null ]
+
+deletes two elements starting from the 3 position - returns the two elements removed
+
+
+*****************************************************
+** Iteration Methods
+
+forEach
+
+let array = [1, 2, 3];
+array.forEach(function(num) {
+  console.log(num); // on first iteration  => 1
+                    // on second iteration => 2
+                    // on third iteration  => 3
+}); // returns `undefined`
+
+With arrow function
+let array = [1, 2, 3];
+array.forEach(num => console.log(num));
+
+NOTE: cb works as the function is assigned to the forEach method's parameter 
+
+
+
+Map
+Returns a new array
+> let numbers = [1, 2, 3, 4]
+> let squares = numbers.map(num => num * num);
+> squares
+= [ 1, 4, 9, 16 ]
+
+> squares = numbers.map(num => num * num);
+= [ 1, 4, 9, 16 ]
+
+
+The main thing to remember is that forEach performs simple iteration 
+and returns undefined, while map transforms an array's elements 
+and returns a new array with the transformed values.
+
+
+Filter
+It returns a new array that includes all elements from the calling 
+array for which the callback returns a truthy value.
+
+> let numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2]
+> numbers.filter(num => num > 4)
+= [ 5, 6, 7, 8, 9, 10 ]
+
+> numbers
+= [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2 ]
+
+
+Reduce
+Reduces the contents of an array to a single value.
+> let arr = [2, 3, 5, 7]
+> arr.reduce((accumulator, element) => accumulator + element, 0)
+= 17
+
+NOTE: the last argument (0) starts the iteration at the first index. If not used,
+the 0 index used as the initial value and the iteration starts at 1
+(it skips the operation on the first value and set it to the initial accumulator value)
+
+strings.reduce((accumulator, element) => {return accumulator + element.toUpperCase()}
+
+******************************************************
+** Array Oddities 
+
+Arrays are objects so typeof(myArr) returns 'object'
+Use Array.isArray
+
+If you change arr.length to a smaller value, it truncates the array
+If you change it to a larger value the new elements do not get initialized
+which leads to strange behavior:
+> let arr = []
+> arr.length = 3
+> arr
+= [ <3 empty items> ]
+
+> arr[0]
+= undefined
+
+> arr.filter(element => element === undefined)
+= []
+
+You can create array "elements" with indexes that use negative or 
+non-integer values, or even non-numeric values
+> arr = [1, 2, 3]
+= [ 1, 2, 3 ]
+
+> arr[-3] = 4
+= 4
+
+> arr
+= [ 1, 2, 3, '-3': 4 ]
+
+> arr[3.1415] = 'pi'
+= 'pi'
+
+> arr["cat"] = 'Fluffy'
+= 'Fluffy'
+
+> arr
+= [ 1, 2, 3, '-3': 4, '3.1415': 'pi', cat: 'Fluffy' ]
+
+These "elements" aren't true elements; they are properties on the array object, 
+which we'll discuss later. 
+Only index values (0, 1, 2, 3, and so on) count toward the length of the array.
+
+Since arrays are objects, you can use the Object.keys method to return an array's keys
+> arr = [1, 2, 3]
+> arr[-3] = 4
+> arr[3.1415] = 'pi'
+> arr["cat"] = 'Fluffy'
+> arr
+= [ 1, 2, 3, '-3': 4, '3.1415': 'pi', cat: 'Fluffy' ]
+
+> Object.keys(arr)
+= [ '0', '1', '2', '-3', '3.1415', 'cat' ]
+
+
+Unset values are different than undefined values!
+
+> let a = new Array(3);
+> a
+= [ <3 empty items> ]
+
+> a[0] === undefined;
+= true
+
+> let b = [];
+> b.length = 3;
+> b
+= [ <3 empty items> ]
+
+> b[0] === undefined;
+= true
+
+> let c = [undefined, undefined, undefined]
+> c
+= [ undefined, undefined, undefined ]
+
+> c[0] === undefined;
+= true
+
+
+
+These "elements" aren't true elements; they are properties on the array object, 
+which we'll discuss later. Only index values (0, 1, 2, 3, and so on) count toward 
+the length of the array.
+
+While the length property of Array includes unset values in the count
+
+While the length property of Array includes unset values in the count, 
+Object.keys only counts those values that have been set to some value:
+
+> let aKeys = Object.keys(a)
+> a.length
+= 3
+> aKeys.length;
+= 0
+
+> let bKeys = Object.keys(b)
+> b.length
+= 3
+> bKeys.length;
+= 0
+
+> let cKeys = Object.keys(c)
+> c.length
+= 3
+> cKeys.length;
+= 3
+
+
+
+
+***********************************************************
+** Nested Arrays
+
+> let teams = [['Joe', 'Jennifer'], ['Frank', 'Molly'], ['Dan', 'Sarah']]
+
+> teams[2]
+= [ 'Dan', 'Sarah' ]
+
+> teams[2][1]
+= 'Sarah'
+
+
+
+***********************************************************
+** Array Equality
+
+[1, 2, 3] === [1, 2, 3]
+returns false!
+
+> let a = [1, 2, 3]
+> let b = a
+> a === b
+returns true!
+
+Pointer to the same location.
+
+Two arrays are only equal when they are the same array!
+
+Same is true for objects.
+
+Function to check array equality:
+
+function arraysEqual(arr1, arr2) {
+  if (arr1.length !== arr2.length) return false;
+
+  for (let i = 0; i < arr1.length; i += 1) {
+    if (arr1[i] !== arr2[i]) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+console.log(arraysEqual([1, 2, 3], [1, 2, 3]));    // => true
+console.log(arraysEqual([1, 2, 3], [4, 5, 6]));    // => false
+console.log(arraysEqual([1, 2, 3], [1, 2, 3, 4])); // => false
+
+Works best when all elements are primitive values. Non-primitive values might not
+return the expected results:
+> arraysEqual([1, 2, [3, 4], 5], [1, 2, [3, 4], 5])
+= false
+
+
+
+*************************************************************
+** Other Array Methods
+
+** includes
+The includes method determines whether an array includes a given element:
+
+> let a = [1, 2, 3, 4, 5]
+> a.includes(2)
+= true
+
+> a.includes(10)
+= false
+
+Internally, includes uses === to compare elements of the array with the argument. 
+That means we can't use includes to check for the existence of a nested 
+array or an object unless we have a reference to the same object or array we're 
+looking for:
+> let inner = [3, 4];
+> let a = [1, 2, inner, 5]
+
+> a.includes([3, 4])
+= false
+
+> a.includes(inner)
+= true
+
+
+
+
+** indexOf
+The indexOf method searches an array for an element with a given value and returns 
+the index of the found element. 
+If the element is not found, indexOf returns -1.
+> let a = ['a', 'b', 'c', 'd', 'e']
+> a.indexOf('c')
+= 2
+
+> a.indexOf('x')
+= -1
+
+indexOf has the same issue as includes:
+> let inner = [3, 4];
+> let a = [1, 2, inner, 5]
+
+> a.indexOf([3, 4])
+= -1
+
+> a.indexOf(inner)
+2
+
+By default, indexOf only looks for the first occurrence of a value in the array. 
+If you want to look beyond the first occurrence, you need to give indexOf a 
+starting index:
+> let a = ['a', 'b', 'c', 'b', 'e']
+> a.indexOf('b')
+= 1
+
+> a.indexOf('b', 2)
+= 3
+
+
+
+** sort
+Mutates the caller!
+> let a = ["e", "c", "h", "b", "d", "a"]
+> a.sort()
+= [ 'a', 'b', 'c', 'd', 'e', 'h' ]
+
+
+
+splice
+The slice method - not the splice method you met earlier - 
+extracts and returns a copied portion of the array. 
+It takes two optional arguments. The first is the index at which extraction begins, 
+while the second is where extraction ends:
+
+> let fruits = ['mango', 'orange', 'banana', 'pear', 'apple']
+> fruits.slice(1, 3)
+= [ 'orange', 'banana' ]
+
+> fruits.slice(2) // second argument defaults to rest of array
+= [ 'banana', 'pear', 'apple' ]
+
+> fruits.slice() // no arguments duplicates the array
+= [ 'mango', 'orange', 'banana', 'pear', 'apple' ]
+If you omit the second argument, slice returns the rest of the array starting 
+with the index given by the first argument. 
+With the second argument, it returns the elements up to but excluding that index. (
+
+
+reverse
+reverse is destructive
+> let numbers = [1, 2, 3, 4]
+> numbers.reverse()
+= [ 4, 3, 2, 1 ]
+
+> numbers
+= [ 4, 3, 2, 1 ]
+
+if you don't want to mutate the original array:
+
+> let numbers = [1, 2, 3, 4]
+> let reversedNumbers = numbers.slice().reverse();
+> reversedNumbers
+= [ 4, 3, 2, 1 ]
+
+> numbers
+= [ 1, 2, 3, 4 ]

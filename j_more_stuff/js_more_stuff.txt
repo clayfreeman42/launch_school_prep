@@ -1,0 +1,243 @@
+
+References equal pointers
+Some languages make a distinction between references and pointers, but JavaScript does not
+
+Some variables are points others contain values
+
+With (most) primitive values, the variable's actual value gets stored in this allocated memory
+
+Assinging one variable to another copies the value to a new location
+
+Changing a variable updates the value at it's address
+
+string values are primitive values. For reasons we won't go into here, 
+strings aren't stored directly in variables in the same way as most primitive values. 
+However, they behave as though they are.
+
+Objects have a pointer to an address that stores pointers to each property
+
+
+let c = [1, 2]
+> let d = c
+> c = [3, 4]
+> c
+= [ 3, 4 ]
+
+> d
+= [ 1, 2 ]
+
+d still had the same pointers AFTER c was reassigned 
+
+*************************
+** Mutating 
+> let e = [1, 2]
+> let f = e
+> e.push(3, 4)
+> e
+= [ 1, 2, 3, 4 ]
+
+> f
+= [ 1, 2, 3, 4 ]
+
+Mutating changes the values - assignment changes the reference!
+
+
+The takeaway of this section is that JavaScript stores primitive values in variables. 
+Still, it uses pointers for non-primitive values like arrays and other objects.
+
+x = [1, 2, 3] and x[2] = 4 differ: both are reassignments, 
+but the second mutates x while the first does not.
+
+********************************************************
+** for/in and for/of
+
+for/in statement iterates over all enumerable properties of an object including 
+any properties inherited from another object. 
+
+for/of is similar to for/in, but it iterates over the values of any "iterable" collection. 
+For our purposes, the only iterable collections are arrays and strings.
+
+for/in - objects
+
+for/of - arrays and strings
+
+** for/in 
+
+let obj = { foo: 1, bar: 2, qux: 'c' };
+for (let key in obj) {
+  console.log(key);
+}
+// Output:  foo
+//          bar
+//          qux
+
+
+** for/in with arrays
+
+let arr = [ 10, 20, 30 ]
+for (let value in arr) {
+  console.log(value);
+}
+// Output:  0
+//          1
+//          2
+
+It's iterating over the index! DO NOT USE for/in WITH ARRAYS!
+
+** for/of
+
+let arr = [ 10, 20, 30 ]
+for (let value of arr) {
+  console.log(value);
+}
+// Output:  10
+//          20
+//          30
+
+********************************************************************
+** Method Chaining
+
+
+
+*******************************************************************
+** RegEx
+
+js object //
+
+** Test Method
+- returns bool
+
+> /o/.test('bobcat')
+= true
+
+> /l/.test('bobcat')
+= false
+
+if (/b/.test('bobcat')) {
+  // this branch executes since 'b' is in 'bobcat'
+  console.log("Yes, it contains the letter 'b'");
+} else {
+  // this branch does not execute since 'bobcat' contains 'b'
+  console.log("No, it doesn't contain the letter 'b'");
+}
+
+** Match Method
+returns array or null
+
+> "bobcat".match(/x/)         // No match
+= null
+
+> "bobcat".match(/[bct]/g)    // Global match
+= [ 'b', 'b', 'c', 't' ]
+
+> "bobcat".match(/b((o)b)/)   // Singular match with groups
+= [ 'bob', 'ob', 'o', index: 0, input: 'bobcat', groups: undefined ]
+
+** RegEx Function Example 
+
+function has_a_or_e(string) {
+  let results = string.match(/[ae]/g);
+  if (results) {
+    // a non-null return value from match is truthy
+    console.log(`We have a match! ${results}`);
+  } else {
+    // a null return value from match is falsy
+    console.log('No match here.');
+  }
+}
+
+has_a_or_e("basketball"); // => We have a match! a,e,a
+has_a_or_e("football");   // => We have a match! a
+has_a_or_e("hockey");     // => We have a match! e
+has_a_or_e("golf");       // => No match here.
+
+
+NOTE: test is more efficient than match 
+
+NOTE: /g repeats:
+
+let regex = /b/g;
+let str = "ababa";
+
+console.log(regex.test(str)); // => true
+console.log(regex.test(str)); // => true
+console.log(regex.test(str)); // => false
+
+
+
+*************************************************************
+** Math Object
+Math.sqrt(36)
+Math.PI
+
+
+************************************************************
+** Date Object
+
+> let date = new Date('December 25, 2012')
+> date.getDay()
+= 2
+
+
+************************************************************
+** Exceptions
+
+js often fails silently with a return of NaN, undefined, null, or even -1
+
+Exceptions are when js raises an error or throws an exception and halts the program
+if the program does not catch the exception
+
+
+** try/catch
+provides a means to handle exceptions
+
+try {
+  // perform an operation that may produce an error
+} catch (exception) {
+  // an error occurred. do something about it.
+  // for example, log the error
+} finally {
+  // Optional 'finally' block; not used often
+  // Executes regardless of whether an exception occurs.
+}
+
+Example
+let names = ['bob', 'joe', 'steve', undefined, 'frank'];
+
+names.forEach(name => {
+  try {
+    console.log(`${name}'s name has ${name.length} letters in it.`);
+  } catch (exception) {
+    console.log('Something went wrong');
+  }
+}); // => bob's name has 3 letters in it.
+    //    joe's name has 3 letters in it.
+    //    steve's name has 5 letters in it.
+    //    Something went wrong
+    //    frank's name has 5 letters in it.
+
+    
+    
+    
+    
+** Raise Your Own Exceptions with throw
+
+function foo(number) {
+  if (typeof number !== "number") {
+    throw new TypeError("expected a number");
+  }
+
+  // we're guaranteed to have a number here
+}
+
+Erros
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error
+
+
+Don't raise exceptions for preventable conditions.
+
+A SyntaxError can occur long after the point where the error was
+
+The code before and after the error does not run. That's because SyntaxErrors are detected 
+before a program begins running. This also shows that there are at least two phases in the life of a program -- 
+a preliminary phase that checks for syntax errors, and an execution phase.

@@ -1,0 +1,218 @@
+
+Other languages have similar key-value data structures, 
+but they may use different names like dictionaries, 
+associative arrays, maps, and hashes.
+
+let person = {
+  name:    'Jane',
+  age:     37,
+  hobbies: ['photography', 'genealogy'],
+};
+
+Keys are strings, but you can skip the quotes when it is 
+alphanumeric or with underscores only
+
+If you have a variable that contains a key's name, you must use bracket notation:
+> let key = 'name'
+> person[key]
+
+
+** Delete
+to delete a key and its value:
+> delete person.age
+= true
+
+> delete person['gender']
+= true
+
+key-value pairs are also called object properties
+
+With const an object is mutable but cannot be reassigned
+
+
+** Freeze
+Object.freeze works to freeze properties the same as with arrays
+
+> const MyObj = Object.freeze({ foo: "bar", qux: "xyz" })
+> MyObj.qux = "hey there"
+> MyObj
+= { foo: 'bar', qux: 'xyz' }
+
+** Object Types
+- Simple Objects
+- Arrays
+- Dates
+- Functions
+- others
+
+
+
+** Some Things Are Neither Objects Nor Primitives
+- variables and other identifiers such as function names
+- statements such as if, return, try, while, and break
+- keywords such as new, function, let, const, and class
+- comments
+- anything else that is neither data nor a function
+
+
+************************************************************
+** Prototypes
+
+** Inherit from an existing object 
+
+let bob = { name: 'Bob', age: 22 };
+let studentBob = Object.create(bob);
+studentBob.year = 'Senior';
+
+console.log(studentBob.name); // => 'Bob'
+
+
+************************************************************
+** Iteration
+
+** For/In
+
+let person = {
+  name: 'Bob',
+  age: 30,
+  height: '6 ft',
+};
+
+for (let prop in person) {
+  console.log(person[prop]);
+}                             // => Bob
+                              //    30
+                              //    6 ft
+
+NOTE: requires bracket notice since prop is a variable
+
+Note: for/in iterates over the properties of an object's prototypes
+This behavior is undesirable when you want to limit iteration to an object's 
+own properties, i.e., properties it defined for itself, not properties it inherited. 
+We can use the hasOwnProperty method to get around that problem. 
+It takes the name of a property and returns true if it is the name of one of the 
+calling object's own properties, false if it is not.
+
+let obj1 = { a: 1, b: 2 };
+let obj2 = Object.create(obj1);
+obj2.c = 3;
+obj2.d = 4;
+
+for (let prop in obj2) {
+  if (obj2.hasOwnProperty(prop)) {
+    console.log(obj2[prop]);
+  }
+} // => 3
+  //    4
+
+
+** Object.keys
+The Object.keys static method returns an object's keys as an array. 
+
+let person = {
+  name: 'Bob',
+  age: 30,
+  height: '6 ft',
+};
+
+let personKeys = Object.keys(person);
+console.log(personKeys);          // => ['name', 'age', 'height']
+personKeys.forEach(key => {
+  console.log(person[key]);
+});                               // => Bob
+                                  //    30
+                                  //    6 ft
+
+** Order of Properties
+Prior to ES6, no guaruntee of the order of an object's keys. 
+
+Standard keys are in order of definition. Symbols or key's that look like
+non-negative integers '0', '1', etc are grouped then followed by string value keys then
+symbols.
+
+For clarity, you should only rely on the iteration order when you know 
+that all of the keys will be alphabetic.
+
+*********************************************************
+** Common Operators
+
+** Object.values
+This static method extracts the values from every own property in an object to an array:
+let person = { name: 'Bob', age: 30, height: '6ft' };
+let personValues = Object.values(person);
+console.log(personValues); // => [ 'Bob', 30, '6ft' ]
+
+
+
+** Object.entries
+While Object.keys and Object.values return the keys and values of an object, 
+respectively, the Object.entries static method returns an array of nested arrays. 
+Each nested array has two elements: one of the object's keys and its corresponding value:
+
+let person = { name: 'Bob', age: 30, height: '6ft' };
+console.log(Object.entries(person)); // => [[ 'name', 'Bob' ], 
+[ 'age', 30 ], [ 'height', '6ft' ]]
+
+
+** Summary:
+- Object.keys returns a single array of keys
+- Object.values returns a single array of values
+- Object.entries returns keys and values as nested arrays
+
+
+** Object.assign
+You may sometimes want to merge two or more objects, i.e., combine the key-value pairs 
+into a single object. The Object.assign static method provides this functionality:
+
+> let objA = { a: 'foo' }
+= undefined
+
+> let objB = { b: 'bar' }
+= undefined
+
+> Object.assign(objA, objB)
+= { a: 'foo', b: 'bar' }
+
+
+
+***********************************************************
+** Objects vs Arrays
+
+When you need to choose between an object or an array to store some data, 
+ask yourself a few questions:
+
+- Do the individual values have names or labels? 
+If yes, use an object. If the data doesn't have a natural label, 
+an array should suffice.
+
+- Does order matter? If yes, use an array.
+
+- Do I need a stack or queue structure? 
+Arrays are good at mimicking simple "last-in-first-out" stacks and 
+"first-in-first-out" queues.
+
+
+
+Summary:
+
+- delete: delete person.age;
+- freeze: const MyObj = Object.freeze({ foo: "bar", qux: "xyz" })
+- create: let studentBob = Object.create(bob);
+- for/in: for (let prop in person) {}
+- Object.keys: let personKeys = Object.keys(person);
+    single array of keys
+- Object.values: let personValues = Object.values(person);
+    single array of values
+- Object.entries: console.log(Object.entries(person))
+    nested array of keys and values
+- Object.assign: Object.assign(objA, objB)
+    mutates first object to contain second and arguments
+    Object.assign({}, objA, objB) - returns new object with A and B props
+- for/in with hasOwnProperty(): obj2.hasOwnProperty(prop)
+    tests if a prop is from the object or inherited 
+
+    for (let key in myObj) {
+  if (myObj.hasOwnProperty(key)) {
+    console.log(key);
+  }
+}

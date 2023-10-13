@@ -1,0 +1,212 @@
+****************************
+Conditionals
+
+** Comparison operators
+<, >, <=, >=, ==, ===, !=, !==
+
+** Logical operators
+!, &&, ||
+
+if (x === 3) console.log('x is 3'); you don't need a block for a single statement/expression
+but blocks make the code more readable
+
+comparison operators return true or false
+
+=== strict equality operator - must have same type and value
+
+!== strict inequality operator - returns false is type and value are the same
+
+== non-strict equality operator - loose equality operator - will attempt to coerce types
+
+<
+"42" < "402"
+false - strings are compared one character at a time
+
+"42" < 420
+true - type coercion 
+
+Operand 
+
+&& and || don't always return true and false, but they do when they operate on a boolean value
+
+Short circuit evaluation
+
+> isRed(item) && isPortable(item)
+// if it's not red, isPortable is not called
+
+> isGreen(item) || hasWheels(item)
+// if item is green, it does not check if it has wheels
+
+Mistake:
+let x;
+
+if (x = 5) {
+  console.log("how can this be true?");
+} else {
+  console.log("it is not true");
+}
+
+x = 5 is an assignment and evalutes to truthy instead of x === 5, which was intended
+
+Falsy:
+0, -0, 0n
+''
+null
+NaN
+undefined
+false
+
+&& and || use short-ciruit evaluation. With truthy and falsy, the return value 
+is always the last operand evaluated, which is not always the last operand due to the short-circuit
+
+> 3 && 'foo'  // last evaluated operand is 'foo'
+= 'foo'
+
+> 'foo' && 3  // last evaluated operand is 3
+= 3
+
+> 0 && 'foo'  // last evaluated operand is 0
+= 0
+
+> 'foo' && 0  // last evaluated operand is 0
+= 0
+
+> 3 || 'foo'  // last evaluated operand is 3
+= 3
+
+> 'foo' || 3  // last evaluated operand is 'foo'
+= 'foo'
+
+> 0 || 'foo'  // last evaluated operand is 'foo'
+= 'foo'
+
+> 'foo' || 0  // last evaluated operand is 'foo'
+= 'foo'
+
+> '' || 0     // last evaluated operand is 0
+= 0
+
+let foo = null;
+let bar = 'qux';
+let isOk = foo || bar;
+
+return = 'qux';
+
+However, using a string as a truthy value isn't very clear - use an if statement or 
+ternary expression
+
+// if statement
+let isOk;
+if (foo || bar) {
+  isOk = true;
+} else {
+  isOk = false;
+}
+
+// ternary expression
+let isOk = (foo || bar) ? true : false;
+
+Many developers force a conversion to a boolean value using !!
+let isOk = !!(foo || bar);
+
+> !!3    // 3 is truthy, !3 is false, !false is true
+= true
+
+> !!''   // '' is falsy, !'' is true, !true is false
+= false
+
+nullish coalescing operator evaluates to the right-hand operand if the left-hand 
+operand is nullish (either null or undefined). 
+Otherwise, it evaluates to the value of the left-hand operand.
+
+> null ?? "over here!"
+= 'over here!'
+
+> undefined ?? "pick me!"
+= 'pick me!'
+
+> false ?? "not me"
+= false
+
+> 0 ?? "not me either"
+= 0
+
+Good for default values!
+
+This is very similar to the || operator, but there's an important difference:
+
+|| will return the right-hand operand if the left operand is a falsy value.
+?? will return the right-hand operand if the left operand is nullish.
+The nullish coalescing operator will short-circuit if the left operand is not nullish:
+
+?? is most useful when dealing with code that could result in 
+undefined or null, and you want to handle the situation gracefully:
+
+function foo(str) {
+  let found = ["Pete", "Alli", "Chris"].find(name => name === str);
+  return found ?? "Not found";
+}
+
+console.log(foo("Alli"));     // => Alli
+console.log(foo("Allison"));  // => Not found
+
+We don't use the nullish coalescing operator much in the Core curriculum. 
+It will be far more useful if you attend Capstone.
+
+Operator Precedence
+
+<=, <, >, >= - Comparison
+===, !==, ==, != - Equality
+&& - Logical AND
+|| - Logical OR
+
+Tenary Operator
+ 1 == 1 ? 'this is true' : 'this is not true'
+
+ Tenary operator is an expression thus returns a result vs an 'if' statement
+
+ Use tenary operators to choose between two values - use if to choose between two actions
+TENARY FOR VALUES / IF FOR ACTIONS
+
+************************
+Switch
+switch, case, default, and break
+
+let a = 5;
+
+switch (a) {
+  case 5:
+    console.log('a is 5');
+    break;
+  case 6:
+    console.log('a is 6');
+    break;
+  default:
+    console.log('a is neither 5, nor 6');
+    break;
+} // => a is 5
+
+REMEBER - a switch continues until it hits a break! 
+Once ONE CASE PASSES, all will pass until there is a break!
+
+Almost always use a break, but it's sometimes appropriate:
+
+let a = 5;
+
+switch (a) {
+  case 5:
+  case 6:
+  case 7:
+    // executed if a is 5, 6, or 7
+    console.log("a is either 5, 6, or 7");
+    break;
+  case 8:
+  case 9:
+    // executed if a is 8 or 9
+    console.log('a is 8 or 9');
+    break;
+  default:
+    // executed if a is anything else
+    console.log('a is not 5, 6, 7, 8, or 9');
+    break;
+}
